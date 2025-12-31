@@ -6,18 +6,19 @@ $day = 1
 
 while($current -le $end){
 
-    # Folder name
     $folder = "Day$day"
 
-    # Create folder if not exists
     if(!(Test-Path $folder)){
         New-Item -ItemType Directory -Path $folder | Out-Null
     }
 
-    # Create file inside folder
-    $file = "$folder\day$day.txt"
+    $file = "$folder\notes.txt"
 
-    "Work log for Day $day - $($current.ToString('yyyy-MM-dd'))" | Out-File $file
+    @"
+Day: $day
+Date: $($current.ToString('yyyy-MM-dd'))
+Summary: Work snapshot
+"@ | Out-File $file
 
     git add .
 
@@ -26,10 +27,8 @@ while($current -le $end){
     $env:GIT_AUTHOR_DATE = $date
     $env:GIT_COMMITTER_DATE = $date
 
-    git commit -m "Day $day : $($current.ToString('yyyy-MM-dd'))"
+    git commit -m "Timeline Day $day"
 
     $current = $current.AddDays(1)
     $day++
 }
-
-Write-Host "Completed 365 folders + commits"
